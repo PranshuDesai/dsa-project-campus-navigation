@@ -36,17 +36,18 @@ edges = [
 G.add_weighted_edges_from(edges)
 
 pos = {
-    "LHC2": (0, 5),
-    "G2": (0, 3),
+    "Veg Mess": (4, 4),
+    "NonVeg Mess": (6, 2),
+
+    "LHC2": (-3, 4),
+    "G2": (1, 3),
+    "Sports Complex": (7, 0),
+
+    "B1": (-5, 2),
     "LHC1": (0, 1),
-    "Library": (0, -1),
-    "Main Gate": (0, -3),
+    "Library": (2, -1),
 
-    "B1": (-3, 3),
-
-    "Veg Mess": (3, 4),
-    "NonVeg Mess": (3, 2),
-    "Sports Complex": (3, 0.5)
+    "Main Gate": (2, -4)
 }
 
 print("\nAvailable Locations:")
@@ -70,14 +71,14 @@ except nx.NetworkXNoPath:
 print("\nShortest Distance:", distance, "minutes")
 print("Path:", " -> ".join(path))
 
-edge_colors = []
-for u, v in G.edges():
-    if (u, v) in list(zip(path, path[1:])) or (v, u) in list(zip(path, path[1:])):
-        edge_colors.append("red")      
-    else:
-        edge_colors.append("black")   
+plt.figure(figsize=(12, 12))
 
-plt.figure(figsize=(10, 12))
+nx.draw_networkx_edges(G, pos, width=2, edge_color="black")
+
+for u, v in zip(path, path[1:]):
+    x1, y1 = pos[u]
+    x2, y2 = pos[v]
+    plt.plot([x1, x2], [y1, y2], color="red", linewidth=5, zorder=50)
 
 nx.draw_networkx_nodes(
     G, pos,
@@ -87,22 +88,18 @@ nx.draw_networkx_nodes(
     linewidths=1.3
 )
 
-nx.draw_networkx_edges(
-    G, pos,
-    width=3,
-    edge_color=edge_colors
-)
-
 nx.draw_networkx_labels(G, pos, font_size=10, font_weight="bold")
 
-nx.draw_networkx_edge_labels(G, pos,
+nx.draw_networkx_edge_labels(
+    G, pos,
     edge_labels=nx.get_edge_attributes(G, "weight"),
     font_size=9
 )
 
-plt.title("IIT Jodhpur Campus Map with Shortest Path Highlighted", fontsize=16)
+plt.title("IIT Jodhpur Campus Map (Scattered Layout) — Shortest Path Highlighted", fontsize=16)
 plt.axis("off")
 plt.tight_layout()
 plt.show()
+
 
 
